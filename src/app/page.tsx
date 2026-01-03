@@ -123,9 +123,9 @@ export default async function Home() {
               ))}
             </div>
 
-            <button className="w-full mt-6 flex py-3 bg-secondary/30 rounded-xl border border-dashed border-border text-xs font-semibold text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-all items-center justify-center gap-2">
+            <Link href="/reports" className="w-full mt-6 flex py-3 bg-secondary/30 rounded-xl border border-dashed border-border text-xs font-semibold text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-all items-center justify-center gap-2">
               Generate Weekly Report
-            </button>
+            </Link>
           </section>
         </div>
       </div>

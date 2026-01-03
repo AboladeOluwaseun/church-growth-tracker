@@ -97,7 +97,7 @@ export default async function ReportsPage() {
               </h2>
             </div>
             <div className="p-6 space-y-6 max-h-[600px] overflow-y-auto custom-scrollbar">
-              {data.prayerRequests.map((req, i) => (
+              {data.prayerRequests.map((req: any, i: number) => (
                 <div key={i} className="space-y-2 border-b border-border last:border-0 pb-6 last:pb-0">
                   <p className="text-xs font-bold text-primary uppercase tracking-widest">{req.name}</p>
                   <p className="text-sm font-medium leading-relaxed italic text-foreground/80">"{req.request}"</p>
