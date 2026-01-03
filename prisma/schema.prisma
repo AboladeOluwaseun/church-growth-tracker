@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FirstTimer {
+  id            String   @id @default(cuid())
+  firstName     String
+  lastName      String
+  phone         String
+  address       String?
+  visitDate     String   // Keeping as string for now to match frontend/JSON data
+  prayerRequest String?
+  notes         String?
+  status        String   @default("New")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

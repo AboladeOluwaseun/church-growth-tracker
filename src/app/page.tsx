@@ -1,101 +1,134 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { Users, TrendingUp, UserPlus, PhoneCall, Calendar, ArrowUpRight } from "lucide-react";
+import { getFirstTimers } from '@/lib/db';
+import StatCard from '@/components/StatCard';
+import GrowthChart from '@/components/GrowthChart';
 
-export default function Home() {
+export default async function Home() {
+  const firstTimers = await getFirstTimers();
+
+  // Metrics Calculation
+  const total = firstTimers.length;
+  const integrated = firstTimers.filter(t => t.status === 'Integrated').length;
+  const retentionRate = total > 0 ? Math.round((integrated / total) * 100) : 0;
+  
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const newThisWeek = firstTimers.filter(t => new Date(t.visitDate) >= oneWeekAgo).length;
+
+  const pending = firstTimers.filter(t => t.status === 'New' || t.status === 'Contacted').length;
+
+  const recentFirstTimers = [...firstTimers].sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime()).slice(0, 4);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      
+      {/* Welcome Section */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Dashboard Overview</h1>
+          <p className="text-muted-foreground mt-1">Monitor guest integration and church growth metrics.</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <Link href="/first-timers/new" className="btn-primary flex items-center gap-2">
+          <UserPlus size={18} />
+          <span>New Guest</span>
+        </Link>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard 
+          icon={<Users size={20} className="text-primary" />}
+          label="Total First Timers"
+          value={total}
+          trend="+5% vs last month"
+          color="bg-primary/5 border-primary/10"
+        />
+        <StatCard 
+          icon={<UserPlus size={20} className="text-violet-500" />}
+          label="Recent Visitors"
+          value={newThisWeek}
+          trend="New this week"
+          color="bg-violet-500/5 border-violet-500/10"
+        />
+        <StatCard 
+          icon={<PhoneCall size={20} className="text-emerald-500" />}
+          label="Follow-ups"
+          value={pending}
+          trend="Action required"
+          color="bg-emerald-500/5 border-emerald-500/10"
+        />
+        <StatCard 
+          icon={<TrendingUp size={20} className="text-amber-500" />}
+          label="Retention"
+          value={`${retentionRate}%`}
+          trend="Goal: 60%"
+          color="bg-amber-500/5 border-amber-500/10"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Main Chart Area */}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="glass-card rounded-2xl p-6 border-border">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="font-bold flex items-center gap-2">
+                <TrendingUp size={20} className="text-primary" />
+                Guest Attendance Growth
+              </h3>
+              <select className="bg-secondary text-xs font-medium px-3 py-1.5 rounded-lg border-none focus:ring-0 cursor-pointer">
+                <option>Last 6 Months</option>
+                <option>Last Year</option>
+              </select>
+            </div>
+            <GrowthChart />
+          </div>
+        </div>
+
+        {/* Sidebar Tasks / Activity */}
+        <div className="space-y-6">
+          <section className="glass-card rounded-2xl p-6 h-full flex flex-col">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-bold flex items-center gap-2">
+                <Calendar size={18} className="text-primary" />
+                Priority Tasks
+              </h3>
+              <Link href="/first-timers" className="text-xs text-primary hover:underline font-medium">View All</Link>
+            </div>
+            
+            <div className="flex-1 space-y-4">
+              {recentFirstTimers.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10 text-center space-y-2">
+                  <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-muted-foreground">
+                    <Users size={24} />
+                  </div>
+                  <p className="text-sm text-muted-foreground">No pending follow-ups</p>
+                </div>
+              ) : recentFirstTimers.map((person) => (
+                <Link key={person.id} href={`/first-timers/${person.id}`} className="group block">
+                  <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-secondary/50 transition-all border border-transparent hover:border-border group">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                      {person.firstName[0]}{person.lastName[0]}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-sm truncate">{person.firstName} {person.lastName}</h4>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">Contact: {person.phone}</p>
+                    </div>
+                    <div className="p-1.5 bg-secondary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ArrowUpRight size={14} className="text-muted-foreground" />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <button className="w-full mt-6 flex py-3 bg-secondary/30 rounded-xl border border-dashed border-border text-xs font-semibold text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-all items-center justify-center gap-2">
+              Generate Weekly Report
+            </button>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }
