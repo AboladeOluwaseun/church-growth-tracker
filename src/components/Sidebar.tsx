@@ -7,7 +7,6 @@ import {
   Users, 
   UserPlus, 
   FileText, 
-  Settings, 
   ChevronRight,
   Sun,
   Moon

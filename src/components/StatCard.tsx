@@ -2,7 +2,15 @@
 
 import { motion } from "framer-motion";
 
-export default function StatCard({ icon, label, value, trend, color }: any) {
+interface StatCardProps {
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+  trend: string;
+  color: string;
+}
+
+export default function StatCard({ icon, label, value, trend, color }: StatCardProps) {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 10 }}

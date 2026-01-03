@@ -1,7 +1,7 @@
 import { getFirstTimer } from '@/lib/db';
 import StatusActions from '@/components/StatusActions';
 import Link from 'next/link';
-import { ChevronLeft, MapPin, Calendar, Phone, MessageSquare, User } from 'lucide-react';
+import { ChevronLeft, MapPin, Calendar, Phone, MessageSquare } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 export default async function FirstTimerDetailPage({ params }: { params: { id: string } }) {

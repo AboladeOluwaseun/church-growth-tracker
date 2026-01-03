@@ -7,9 +7,8 @@ import Link from 'next/link';
 
 export default function FirstTimerList({ initialData }: { initialData: FirstTimer[] }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [data, setData] = useState(initialData);
 
-  const filteredData = data.filter(person => 
+  const filteredData = initialData.filter(person => 
     person.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     person.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     person.phone.includes(searchTerm)

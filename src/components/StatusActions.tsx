@@ -44,8 +44,17 @@ export default function StatusActions({ id, currentStatus }: { id: string, curre
   );
 }
 
-function ActionButton({ label, icon, active, onClick, loading, variant }: any) {
-  const variants: any = {
+interface ActionButtonProps {
+  label: string;
+  icon: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+  loading: boolean;
+  variant: 'violet' | 'emerald' | 'indigo';
+}
+
+function ActionButton({ label, icon, active, onClick, loading, variant }: ActionButtonProps) {
+  const variants: Record<ActionButtonProps['variant'], string> = {
     violet: 'hover:border-violet-500/50 hover:bg-violet-500/5 text-violet-600 dark:text-violet-400',
     emerald: 'hover:border-emerald-500/50 hover:bg-emerald-500/5 text-emerald-600 dark:text-emerald-400',
     indigo: 'hover:border-indigo-500/50 hover:bg-indigo-500/5 text-indigo-600 dark:text-indigo-400',
