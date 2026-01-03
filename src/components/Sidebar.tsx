@@ -18,7 +18,7 @@ const menuItems = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "First Timers", href: "/first-timers", icon: Users },
   { name: "New Registration", href: "/first-timers/new", icon: UserPlus },
-  { name: "Reports", href: "#", icon: FileText },
+  { name: "Reports", href: "/reports", icon: FileText },
 ];
 
 export default function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (val: boolean) => void }) {

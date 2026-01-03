@@ -47,3 +47,40 @@ export async function updateFirstTimer(id: string, data: Partial<FirstTimer>): P
   });
   return updated as unknown as FirstTimer;
 }
+
+export async function getWeeklyReportData() {
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const dateString = sevenDaysAgo.toISOString().split('T')[0];
+
+  const thisWeekGuests = await prisma.firstTimer.findMany({
+    where: {
+      visitDate: {
+        gte: dateString
+      }
+    },
+    orderBy: { visitDate: 'desc' }
+  });
+
+  const total = thisWeekGuests.length;
+  const byStatus = {
+    New: thisWeekGuests.filter((g: any) => g.status === 'New').length,
+    Contacted: thisWeekGuests.filter((g: any) => g.status === 'Contacted').length,
+    Visited: thisWeekGuests.filter((g: any) => g.status === 'Visited').length,
+    Integrated: thisWeekGuests.filter((g: any) => g.status === 'Integrated').length,
+  };
+
+  const prayerRequests = thisWeekGuests
+    .filter((g: any) => g.prayerRequest)
+    .map((g: any) => ({
+      name: `${g.firstName} ${g.lastName}`,
+      request: g.prayerRequest
+    }));
+
+  return {
+    total,
+    byStatus,
+    prayerRequests,
+    guests: thisWeekGuests as unknown as FirstTimer[]
+  };
+}
