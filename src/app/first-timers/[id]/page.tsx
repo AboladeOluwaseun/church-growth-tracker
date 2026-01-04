@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { ChevronLeft, MapPin, Calendar, Phone, MessageSquare } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import FollowUpLog from '@/components/FollowUpLog';
-import { getServerSession } from '@/lib/auth';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const person = await getFirstTimer(params.id);
@@ -14,7 +13,6 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 }
 
 export default async function FirstTimerDetailPage({ params }: { params: { id: string } }) {
-  const session = await getServerSession();
   const person = await getFirstTimer(params.id);
 
   if (!person) {

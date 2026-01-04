@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Send, Clock, User, CheckCircle2 } from 'lucide-react';
+import { MessageSquare, Send, Clock, CheckCircle2 } from 'lucide-react';
 
 interface FollowUp {
   id: string;
@@ -66,6 +66,12 @@ export default function FollowUpLog({ firstTimerId }: { firstTimerId: string }) 
           {followUps.length} entries
         </span>
       </div>
+      
+      {error && (
+        <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-xl text-xs font-bold animate-in fade-in slide-in-from-top-2">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="relative group">
         <textarea
