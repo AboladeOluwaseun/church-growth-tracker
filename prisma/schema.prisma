@@ -19,4 +19,35 @@ model FirstTimer {
   status        String   @default("New")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  assignedTo    User?    @relation(fields: [assignedToId], references: [id])
+  assignedToId  String?
+  followUps     FollowUp[]
 }
+
+model User {
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  password      String
+  role          Role         @default(MEMBER)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  assignedItems FirstTimer[]
+  followUps     FollowUp[]
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+model FollowUp {
+  id            String   @id @default(cuid())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+  firstTimer    FirstTimer @relation(fields: [firstTimerId], references: [id])
+  firstTimerId  String
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+

@@ -3,6 +3,7 @@ import StatusActions from '@/components/StatusActions';
 import Link from 'next/link';
 import { ChevronLeft, MapPin, Calendar, Phone, MessageSquare } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import FollowUpLog from '@/components/FollowUpLog';
 
 export default async function FirstTimerDetailPage({ params }: { params: { id: string } }) {
   const firstTimer = await getFirstTimer(params.id);
@@ -73,6 +74,10 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="glass-card p-8 rounded-2xl bg-card">
+            <FollowUpLog firstTimerId={firstTimer.id} />
           </div>
         </div>
 

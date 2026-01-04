@@ -1,8 +1,14 @@
 import { prisma } from './prisma';
 import { FirstTimer } from '@/types';
 
-export async function getFirstTimers(): Promise<FirstTimer[]> {
+export async function getFirstTimers(userId?: string): Promise<FirstTimer[]> {
+  const where: any = {};
+  if (userId) {
+    where.assignedToId = userId;
+  }
+  
   const firstTimers = await prisma.firstTimer.findMany({
+    where,
     orderBy: { visitDate: 'desc' }
   });
   return firstTimers as unknown as FirstTimer[];
@@ -48,17 +54,23 @@ export async function updateFirstTimer(id: string, data: Partial<FirstTimer>): P
   return updated as unknown as FirstTimer;
 }
 
-export async function getWeeklyReportData() {
+export async function getWeeklyReportData(userId?: string) {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const dateString = sevenDaysAgo.toISOString().split('T')[0];
 
+  const where: any = {
+    visitDate: {
+      gte: dateString
+    }
+  };
+
+  if (userId) {
+    where.assignedToId = userId;
+  }
+
   const thisWeekGuests = await prisma.firstTimer.findMany({
-    where: {
-      visitDate: {
-        gte: dateString
-      }
-    },
+    where,
     orderBy: { visitDate: 'desc' }
   });
 

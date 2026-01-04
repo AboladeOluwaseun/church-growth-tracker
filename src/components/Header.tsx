@@ -3,7 +3,7 @@
 import { Search, Bell, HelpCircle, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
+export default function Header({ onMenuClick, user }: { onMenuClick: () => void, user: any }) {
   const pathname = usePathname();
   const date = new Date().toLocaleDateString('en-US', { 
     weekday: 'short', 
@@ -30,7 +30,9 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
           <Menu size={20} />
         </button>
         <div>
-          <h2 className="text-base md:text-xl font-bold text-foreground leading-tight">{getPageTitle()}</h2>
+          <h2 className="text-base md:text-xl font-bold text-foreground leading-tight">
+            {user?.name ? `Hello, ${user.name.split(' ')[0]}` : getPageTitle()}
+          </h2>
           <p className="text-[10px] md:text-xs text-muted-foreground font-medium">{date}</p>
         </div>
       </div>

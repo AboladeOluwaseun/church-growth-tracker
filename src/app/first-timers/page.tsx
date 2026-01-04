@@ -1,12 +1,15 @@
 import { getFirstTimers } from '@/lib/db';
 import FirstTimerList from '@/components/FirstTimerList';
 import { Users } from 'lucide-react';
+import { getSession } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export const metadata = {
   title: 'Directory | Feeding Centre',
 };
 
 export default async function FirstTimersPage() {
+  const session = await getSession({ cookies: { get: (name: string) => require('next/headers').cookies().get(name) } } as any) as any;
   const firstTimers = await getFirstTimers();
 
   return (
@@ -21,7 +24,7 @@ export default async function FirstTimersPage() {
         </div>
       </div>
 
-      <FirstTimerList initialData={firstTimers} />
+      <FirstTimerList initialData={firstTimers} userRole={session?.role} userId={session?.userId} />
     </div>
   );
 }

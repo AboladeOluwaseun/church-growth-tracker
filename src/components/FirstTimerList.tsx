@@ -5,14 +5,29 @@ import { FirstTimer } from '@/types';
 import { Search, Phone, Calendar, MapPin, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
-export default function FirstTimerList({ initialData }: { initialData: FirstTimer[] }) {
+export default function FirstTimerList({ 
+  initialData, 
+  userRole, 
+  userId 
+}: { 
+  initialData: FirstTimer[],
+  userRole?: string,
+  userId?: string
+}) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState<'all' | 'mine'>(userRole === 'MEMBER' ? 'mine' : 'all');
 
-  const filteredData = initialData.filter(person => 
-    person.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    person.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    person.phone.includes(searchTerm)
-  );
+  const filteredData = initialData.filter(person => {
+    const matchesSearch = 
+      person.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      person.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      person.phone.includes(searchTerm);
+    
+    if (filter === 'mine') {
+      return matchesSearch && (person as any).assignedToId === userId;
+    }
+    return matchesSearch;
+  });
 
   return (
     <div className="space-y-6">
@@ -27,6 +42,23 @@ export default function FirstTimerList({ initialData }: { initialData: FirstTime
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+
+        {userRole === 'ADMIN' && (
+          <div className="flex bg-secondary/50 p-1 rounded-xl border border-border">
+            <button 
+              onClick={() => setFilter('all')}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${filter === 'all' ? 'bg-primary text-primary-foreground shadow-lg' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              All Guests
+            </button>
+            <button 
+              onClick={() => setFilter('mine')}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${filter === 'mine' ? 'bg-primary text-primary-foreground shadow-lg' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              My Assignments
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
