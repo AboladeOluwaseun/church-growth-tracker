@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Phone, Calendar, User, MessageSquare, ArrowRight } from 'lucide-react';
+import { Phone, Calendar, MessageSquare, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { FollowUp, FirstTimer } from '@/types';
+
+type FollowUpWithGuest = FollowUp & { firstTimer: FirstTimer };
 
 export default function MyFollowUpsPage() {
-  const [followUps, setFollowUps] = useState<any[]>([]);
+  const [followUps, setFollowUps] = useState<FollowUpWithGuest[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,7 +39,7 @@ export default function MyFollowUpsPage() {
           <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center text-muted-foreground">
             <Calendar size={32} />
           </div>
-          <p className="text-muted-foreground">You haven't logged any follow-ups yet.</p>
+          <p className="text-muted-foreground">You haven&apos;t logged any follow-ups yet.</p>
           <Link href="/first-timers" className="btn-primary">View Assigned Guests</Link>
         </div>
       ) : (
@@ -50,12 +53,12 @@ export default function MyFollowUpsPage() {
               className="glass-card p-4 rounded-xl border-border hover:border-primary/50 transition-all flex flex-col md:flex-row md:items-center gap-4 group"
             >
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0">
-                {fu.firstTimer.firstName[0]}{fu.firstTimer.lastName[0]}
+                {fu.firstTimer?.firstName[0]}{fu.firstTimer?.lastName[0]}
               </div>
               
               <div className="flex-1 space-y-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-bold">{fu.firstTimer.firstName} {fu.firstTimer.lastName}</h3>
+                  <h3 className="font-bold">{fu.firstTimer?.firstName} {fu.firstTimer?.lastName}</h3>
                   <span className="text-[10px] bg-secondary px-2 py-0.5 rounded font-bold uppercase tracking-wider text-muted-foreground">
                     Guest
                   </span>
@@ -67,7 +70,7 @@ export default function MyFollowUpsPage() {
                   </span>
                   <span className="flex items-center gap-1.5 font-medium">
                     <Phone size={14} className="text-emerald-500" />
-                    {fu.firstTimer.phone}
+                    {fu.firstTimer?.phone}
                   </span>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Users, TrendingUp, UserPlus, PhoneCall, Calendar, ArrowUpRight, ShieldCheck, Activity } from "lucide-react";
+import { Users, TrendingUp, UserPlus, PhoneCall, Calendar, ArrowUpRight, ShieldCheck, Activity, LayoutDashboard } from "lucide-react";
 import { getFirstTimers } from '@/lib/db';
 import StatCard from '@/components/StatCard';
 import GrowthChart from '@/components/GrowthChart';
@@ -7,18 +7,18 @@ import { getServerSession } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export default async function Home() {
-  const session = await getServerSession() as any;
+  const session = await getServerSession();
   const isAdmin = session?.role === 'ADMIN';
   
   // Fetch data personalized for the user
-  const firstTimers = await getFirstTimers(isAdmin ? undefined : (session?.userId as string));
+  const firstTimers = await getFirstTimers(isAdmin ? undefined : (session?.userId));
   
   // For Admin: Fetch some global member activity metrics
   let memberCount = 0;
   let totalFollowUps = 0;
   if (isAdmin) {
-    memberCount = await (prisma as any).user.count({ where: { role: 'MEMBER' } });
-    totalFollowUps = await (prisma as any).followUp.count();
+    memberCount = await prisma.user.count({ where: { role: 'MEMBER' } });
+    totalFollowUps = await prisma.followUp.count();
   }
 
   // Metrics Calculation
@@ -222,23 +222,3 @@ export default async function Home() {
     </div>
   );
 }
-
-const LayoutDashboard = ({ className, size }: { className?: string, size?: number }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width={size || 24} 
-    height={size || 24} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <rect width="7" height="9" x="3" y="3" rx="1" />
-    <rect width="7" height="5" x="14" y="3" rx="1" />
-    <rect width="7" height="9" x="14" y="12" rx="1" />
-    <rect width="7" height="5" x="3" y="16" rx="1" />
-  </svg>
-);

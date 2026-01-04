@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getSession } from '@/lib/auth';
+import { getServerSession } from '@/lib/auth';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const session = await getSession(request as any);
+    const session = await getServerSession();
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -18,9 +18,9 @@ export async function POST(request: Request) {
 
     const followUp = await prisma.followUp.create({
       data: {
-        userId: session.userId,
-        firstTimerId,
-        notes,
+        userId: session.userId as string,
+        firstTimerId: firstTimerId as string,
+        notes: notes as string,
       },
       include: {
         user: {
@@ -30,15 +30,15 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(followUp);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Follow-up API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const session = await getSession(request as any);
+    const session = await getServerSession();
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json(followUps);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Follow-up fetch error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

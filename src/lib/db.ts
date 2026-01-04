@@ -1,8 +1,9 @@
 import { prisma } from './prisma';
 import { FirstTimer } from '@/types';
+import { Prisma } from '../generated/client';
 
 export async function getFirstTimers(userId?: string): Promise<FirstTimer[]> {
-  const where: any = {};
+  const where: Prisma.FirstTimerWhereInput = {};
   if (userId) {
     where.assignedToId = userId;
   }
@@ -59,7 +60,7 @@ export async function getWeeklyReportData(userId?: string) {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const dateString = sevenDaysAgo.toISOString().split('T')[0];
 
-  const where: any = {
+  const where: Prisma.FirstTimerWhereInput = {
     visitDate: {
       gte: dateString
     }
@@ -76,17 +77,17 @@ export async function getWeeklyReportData(userId?: string) {
 
   const total = thisWeekGuests.length;
   const byStatus = {
-    New: thisWeekGuests.filter((g: any) => g.status === 'New').length,
-    Contacted: thisWeekGuests.filter((g: any) => g.status === 'Contacted').length,
-    Visited: thisWeekGuests.filter((g: any) => g.status === 'Visited').length,
-    Integrated: thisWeekGuests.filter((g: any) => g.status === 'Integrated').length,
+    New: thisWeekGuests.filter((g) => g.status === 'New').length,
+    Contacted: thisWeekGuests.filter((g) => g.status === 'Contacted').length,
+    Visited: thisWeekGuests.filter((g) => g.status === 'Visited').length,
+    Integrated: thisWeekGuests.filter((g) => g.status === 'Integrated').length,
   };
 
   const prayerRequests = thisWeekGuests
-    .filter((g: any) => g.prayerRequest)
-    .map((g: any) => ({
+    .filter((g) => g.prayerRequest)
+    .map((g) => ({
       name: `${g.firstName} ${g.lastName}`,
-      request: g.prayerRequest
+      request: g.prayerRequest as string
     }));
 
   return {
@@ -95,4 +96,14 @@ export async function getWeeklyReportData(userId?: string) {
     prayerRequests,
     guests: thisWeekGuests as unknown as FirstTimer[]
   };
+}
+export async function assignFirstTimer(firstTimerId: string, userId: string): Promise<FirstTimer | null> {
+  const updated = await prisma.firstTimer.update({
+    where: { id: firstTimerId },
+    data: {
+      assignedTo: { connect: { id: userId } },
+      status: 'Contacted'
+    }
+  });
+  return updated as unknown as FirstTimer;
 }

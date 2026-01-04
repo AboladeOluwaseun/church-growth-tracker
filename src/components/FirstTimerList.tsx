@@ -24,7 +24,7 @@ export default function FirstTimerList({
       person.phone.includes(searchTerm);
     
     if (filter === 'mine') {
-      return matchesSearch && (person as any).assignedToId === userId;
+      return matchesSearch && person.assignedToId === userId;
     }
     return matchesSearch;
   });

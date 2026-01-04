@@ -4,11 +4,20 @@ import Link from 'next/link';
 import { ChevronLeft, MapPin, Calendar, Phone, MessageSquare } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import FollowUpLog from '@/components/FollowUpLog';
+import { getServerSession } from '@/lib/auth';
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const person = await getFirstTimer(params.id);
+  return {
+    title: person ? `${person.firstName} ${person.lastName} | Feeding Centre` : 'Guest Not Found',
+  };
+}
 
 export default async function FirstTimerDetailPage({ params }: { params: { id: string } }) {
-  const firstTimer = await getFirstTimer(params.id);
+  const session = await getServerSession();
+  const person = await getFirstTimer(params.id);
 
-  if (!firstTimer) {
+  if (!person) {
     notFound();
   }
 
@@ -25,13 +34,13 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
             <div className="flex items-start justify-between mb-10 relative">
               <div className="flex gap-6 items-center">
                 <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center text-3xl font-bold text-primary-foreground shadow-2xl shadow-primary/20">
-                  {firstTimer.firstName[0]}{firstTimer.lastName[0]}
+                  {person.firstName[0]}{person.lastName[0]}
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold tracking-tight">{firstTimer.firstName} {firstTimer.lastName}</h1>
+                  <h1 className="text-3xl font-bold tracking-tight">{person.firstName} {person.lastName}</h1>
                   <div className="flex items-center gap-2 text-muted-foreground mt-1 text-sm font-medium">
                     <Calendar size={14} />
-                    <span>First visit: {firstTimer.visitDate}</span>
+                    <span>First visit: {person.visitDate}</span>
                   </div>
                 </div>
               </div>
@@ -46,13 +55,13 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
                       <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground">
                         <Phone size={16} />
                       </div>
-                      <span className="text-lg">{firstTimer.phone}</span>
+                      <span className="text-lg">{person.phone}</span>
                     </div>
                     <div className="flex items-center gap-3 text-muted-foreground text-sm">
                       <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground">
                         <MapPin size={16} />
                       </div>
-                      <span>{firstTimer.address || 'No address provided'}</span>
+                      <span>{person.address || 'No address provided'}</span>
                     </div>
                   </div>
                 </div>
@@ -60,7 +69,7 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
                 <div>
                   <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Prayer Request</h3>
                   <div className="p-5 bg-secondary/50 rounded-2xl text-foreground font-medium border border-border italic text-sm leading-relaxed">
-                    {firstTimer.prayerRequest ? `"${firstTimer.prayerRequest}"` : "None recorded."}
+                    {person.prayerRequest ? `&quot;${person.prayerRequest}&quot;` : "None recorded."}
                   </div>
                 </div>
               </div>
@@ -69,7 +78,7 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
                 <div>
                   <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Staff Notes</h3>
                   <div className="p-5 bg-secondary/30 rounded-2xl text-muted-foreground border border-dashed border-border text-sm leading-relaxed">
-                    {firstTimer.notes || 'No additional notes provided for this guest.'}
+                    {person.notes || 'No additional notes provided for this guest.'}
                   </div>
                 </div>
               </div>
@@ -77,7 +86,7 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
           </div>
 
           <div className="glass-card p-8 rounded-2xl bg-card">
-            <FollowUpLog firstTimerId={firstTimer.id} />
+            <FollowUpLog firstTimerId={person.id} />
           </div>
         </div>
 
@@ -87,7 +96,7 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
             <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-6">Integration Progress</h2>
             <div className="relative pt-2">
                <div className="flex items-center justify-between mb-4">
-                 <span className="text-2xl font-black text-primary">{firstTimer.status}</span>
+                 <span className="text-2xl font-black text-primary">{person.status}</span>
                  <div className="px-2 py-1 rounded bg-secondary text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">Current Status</div>
                </div>
                
@@ -95,14 +104,14 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
                   <div 
                     className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(var(--primary),0.5)]" 
                     style={{ 
-                      width: firstTimer.status === 'New' ? '25%' : 
-                             firstTimer.status === 'Contacted' ? '50%' :
-                             firstTimer.status === 'Visited' ? '75%' : '100%' 
+                      width: person.status === 'New' ? '25%' : 
+                             person.status === 'Contacted' ? '50%' :
+                             person.status === 'Visited' ? '75%' : '100%' 
                     }}
                   ></div>
                </div>
 
-              <StatusActions id={firstTimer.id} currentStatus={firstTimer.status} />
+              <StatusActions id={person.id} currentStatus={person.status} />
             </div>
           </div>
 

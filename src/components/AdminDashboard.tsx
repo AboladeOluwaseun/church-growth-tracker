@@ -4,12 +4,22 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Users, ClipboardList, Clock, CheckCircle2, AlertCircle, Search } from 'lucide-react';
 
-interface MemberActivity {
-  id: string;
-  name: string;
-  email: string;
-  assignedItems: any[];
-  followUps: any[];
+import { FollowUp, User } from '@/types';
+
+interface MemberActivity extends User {
+  assignedItems: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    status: string;
+    visitDate: string;
+  }[];
+  followUps: (FollowUp & {
+    firstTimer: {
+      firstName: string;
+      lastName: string;
+    }
+  })[];
 }
 
 export default function AdminDashboard() {
@@ -122,14 +132,14 @@ export default function AdminDashboard() {
                   {member.followUps.length === 0 ? (
                     <p className="text-sm text-muted-foreground bg-secondary/30 rounded-xl p-3 text-center border border-dashed border-border italic">No recent follow-up activity</p>
                   ) : (
-                    member.followUps.map((fu: any) => (
+                    member.followUps.map((fu: FollowUp & { firstTimer: { firstName: string; lastName: string; } }) => (
                       <div key={fu.id} className="flex gap-3 items-start p-3 bg-secondary/30 rounded-xl border border-border/50 group hover:border-primary/20 transition-all">
                         <div className="mt-1 w-2 h-2 rounded-full bg-primary shrink-0" />
                         <div>
                           <p className="text-sm font-semibold">
                             Logged a follow-up for <span className="text-primary">{fu.firstTimer.firstName} {fu.firstTimer.lastName}</span>
                           </p>
-                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1 italic">"{fu.notes || 'No notes'}"</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1 italic">&quot;{fu.notes || 'No notes'}&quot;</p>
                           <p className="text-[10px] text-muted-foreground mt-1 font-medium italic">
                             {new Date(fu.createdAt).toLocaleDateString()}
                           </p>

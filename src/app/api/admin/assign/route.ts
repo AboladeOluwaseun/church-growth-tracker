@@ -1,29 +1,29 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { getSession } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server';
+// import { prisma } from '@/lib/prisma';
+import { PrismaClient } from '@/generated/client';
+const prisma = (globalThis as any).prisma as PrismaClient || new PrismaClient();
+import { getServerSession } from '@/lib/auth';
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const session = await getSession(request as any);
+    const session = await getServerSession();
 
     if (!session || session.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { firstTimerId, userId } = await request.json();
+    const { firstTimerId, userId } = await req.json();
 
     if (!firstTimerId || !userId) {
-      return NextResponse.json({ error: 'FirstTimerId and UserId are required' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const updated = await (prisma as any).firstTimer.update({
-      where: { id: firstTimerId },
-      data: { assignedToId: userId },
-    });
+    const { assignFirstTimer } = await import('@/lib/db');
+    const updated = await assignFirstTimer(firstTimerId, userId);
 
     return NextResponse.json(updated);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Assign API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Internal Server Error' }, { status: 500 });
   }
 }

@@ -1,16 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const session = await getSession(request as any);
+    const session = await getSession(request);
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const followUps = await (prisma as any).followUp.findMany({
-      where: { userId: session.userId },
+    const followUps = await prisma.followUp.findMany({
+      where: { userId: session.userId as string },
       include: {
         firstTimer: true
       },
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json(followUps);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('My FollowUps API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

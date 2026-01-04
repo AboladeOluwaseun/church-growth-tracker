@@ -1,16 +1,18 @@
-import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { getSession, signToken } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { Role } from '@/types';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const session = await getSession(request as any);
+    const session = await getSession(request);
 
     if (!session) {
       return NextResponse.json({ user: null }, { status: 200 });
     }
 
-    const user = await (prisma as any).user.findUnique({
+    const userModel = prisma.user;
+    const user = await userModel.findUnique({
       where: { id: session.userId as string },
       select: {
         id: true,
@@ -29,8 +31,7 @@ export async function GET(request: Request) {
     // If the role in the database is different from the role in the session token,
     // we need to refresh the token to keep the middleware in sync.
     if (user.role !== session.role) {
-      const { signToken } = await import('@/lib/auth');
-      const newToken = await signToken({ userId: user.id, role: user.role });
+      const newToken = await signToken({ userId: user.id, role: user.role as Role });
       response.cookies.set('auth', newToken, { 
         httpOnly: true, 
         path: '/', 

@@ -18,6 +18,8 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { User } from "@/types";
+
 const menuItems = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "First Timers", href: "/first-timers", icon: Users },
@@ -34,7 +36,7 @@ export default function Sidebar({
 }: { 
   isOpen: boolean, 
   setIsOpen: (val: boolean) => void,
-  user: any
+  user: User | null
 }) {
   const pathname = usePathname();
   const router = useRouter();

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Plus, Send, Clock, User, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { MessageSquare, Send, Clock, User, CheckCircle2 } from 'lucide-react';
 
 interface FollowUp {
   id: string;
@@ -48,8 +48,8 @@ export default function FollowUpLog({ firstTimerId }: { firstTimerId: string }) 
 
       setFollowUps([data, ...followUps]);
       setNewNote('');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setSubmitting(false);
     }
@@ -104,7 +104,7 @@ export default function FollowUpLog({ firstTimerId }: { firstTimerId: string }) 
           </div>
         ) : (
           <AnimatePresence initial={false}>
-            {followUps.map((fu, index) => (
+            {followUps.map((fu) => (
               <motion.div
                 key={fu.id}
                 initial={{ opacity: 0, x: -10 }}

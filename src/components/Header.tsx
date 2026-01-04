@@ -2,8 +2,9 @@
 
 import { Search, Bell, HelpCircle, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { User } from "@/types";
 
-export default function Header({ onMenuClick, user }: { onMenuClick: () => void, user: any }) {
+export default function Header({ onMenuClick, user }: { onMenuClick: () => void, user: User | null }) {
   const pathname = usePathname();
   const date = new Date().toLocaleDateString('en-US', { 
     weekday: 'short', 

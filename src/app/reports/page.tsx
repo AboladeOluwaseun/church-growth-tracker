@@ -97,10 +97,10 @@ export default async function ReportsPage() {
               </h2>
             </div>
             <div className="p-6 space-y-6 max-h-[600px] overflow-y-auto custom-scrollbar">
-              {data.prayerRequests.map((req: any, i: number) => (
+              {data.prayerRequests.map((req: { name: string; request: string }, i: number) => (
                 <div key={i} className="space-y-2 border-b border-border last:border-0 pb-6 last:pb-0">
                   <p className="text-xs font-bold text-primary uppercase tracking-widest">{req.name}</p>
-                  <p className="text-sm font-medium leading-relaxed italic text-foreground/80">"{req.request}"</p>
+                  <p className="text-sm font-medium leading-relaxed italic text-foreground/80">&quot;{req.request}&quot;</p>
                 </div>
               ))}
               {data.prayerRequests.length === 0 && (
@@ -116,7 +116,14 @@ export default async function ReportsPage() {
   );
 }
 
-function ReportMetric({ label, value, icon, color }: any) {
+interface ReportMetricProps {
+  label: string;
+  value: string | number;
+  icon: React.ReactNode;
+  color: string;
+}
+
+function ReportMetric({ label, value, icon, color }: ReportMetricProps) {
   return (
     <div className="glass-card p-6 rounded-2xl bg-card border border-border shadow-sm group hover:border-primary/50 transition-all">
       <div className="flex items-center justify-between mb-4">

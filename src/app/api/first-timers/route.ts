@@ -1,25 +1,26 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getSession } from '@/lib/auth';
+import { getServerSession } from '@/lib/auth';
+import { Prisma } from '@/generated/client';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const unassignedOnly = searchParams.get('unassigned') === 'true';
 
-    const session = await getSession(request as any);
+    const session = await getServerSession();
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const where: any = {};
+    const where: Prisma.FirstTimerWhereInput = {};
     if (unassignedOnly) {
       where.assignedToId = null;
     }
 
     // Role-based filtering: members only see theirs (unless unassigned check is active)
     if (session.role === 'MEMBER' && !unassignedOnly) {
-      where.assignedToId = session.userId;
+      where.assignedToId = session.userId as string;
     }
 
     const firstTimers = await prisma.firstTimer.findMany({

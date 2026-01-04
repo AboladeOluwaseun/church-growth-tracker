@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getSession } from '@/lib/auth';
+import { getServerSession } from '@/lib/auth';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const session = await getSession(request as any);
-
+    const session = await getServerSession();
     if (!session || session.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const members = await prisma.user.findMany({
+    const userModel = prisma.user;
+    const members = await userModel.findMany({
       where: { role: 'MEMBER' },
       include: {
         assignedItems: {
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json(members);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Admin API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

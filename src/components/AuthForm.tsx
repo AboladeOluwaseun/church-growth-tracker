@@ -41,8 +41,8 @@ export default function AuthForm({ type }: AuthFormProps) {
 
       router.push('/');
       router.refresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
@@ -169,7 +169,7 @@ export default function AuthForm({ type }: AuthFormProps) {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-muted-foreground">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
+              {isLogin ? "Don&apos;t have an account?" : "Already have an account?"}{' '}
               <Link 
                 href={isLogin ? '/auth/signup' : '/auth/login'} 
                 className="text-primary font-bold hover:underline"
