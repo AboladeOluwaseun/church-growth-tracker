@@ -9,7 +9,6 @@ import { getServerSession } from '@/lib/auth';
 
 export async function submitFirstTimer(formData: FormData) {
   const session = await getServerSession();
-  const isMember = session?.role === 'MEMBER';
 
   const data: Omit<FirstTimer, 'id'> & { assignedToId?: string } = {
     firstName: formData.get('firstName') as string,

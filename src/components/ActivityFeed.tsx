@@ -1,7 +1,7 @@
 'use client';
 
-import { useTheme } from 'next-themes';
-import { Phone, Home, MessageSquare, FileText, Clock, User, CheckCircle2 } from 'lucide-react';
+
+import { Phone, Home, MessageSquare, FileText, Clock, CheckCircle2 } from 'lucide-react';
 import { FollowUpType } from '@/types';
 
 interface Activity {

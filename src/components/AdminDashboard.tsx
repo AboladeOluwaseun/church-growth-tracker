@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Users, ClipboardList, Clock, CheckCircle2, AlertCircle, Search } from 'lucide-react';
 
-import { FollowUp, User } from '@/types';
+import { FollowUp, User, FollowUpType } from '@/types';
 import ActivityFeed from '@/components/ActivityFeed';
 
 interface MemberActivity extends User {
@@ -23,11 +23,23 @@ interface MemberActivity extends User {
   })[];
 }
 
-// ... imports
+interface Activity {
+    id: string;
+    type: FollowUpType | 'ATTENDANCE';
+    notes: string | null;
+    createdAt: string | Date;
+    user: {
+      name: string | null;
+    } | null;
+    firstTimer: {
+      firstName: string;
+      lastName: string;
+    };
+  }
 
 export default function AdminDashboard() {
   const [members, setMembers] = useState<MemberActivity[]>([]);
-  const [activities, setActivities] = useState<any[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, FileText, Phone, Home, MessageSquare, Loader2, Send, Clock, CheckCircle2 } from 'lucide-react';
+import { FileText, Phone, Home, MessageSquare, Send, Clock, CheckCircle2 } from 'lucide-react';
 import { FollowUp, FollowUpType } from '@/types';
 
 
@@ -27,7 +27,7 @@ export default function FollowUpLog({ firstTimerId, initialLogs = [] }: { firstT
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
-  }, [firstTimerId]);
+  }, [firstTimerId, initialLogs.length]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,15 +53,6 @@ export default function FollowUpLog({ firstTimerId, initialLogs = [] }: { firstT
     }
   };
 
-  const getIcon = (type: FollowUpType) => {
-    switch (type) {
-      case 'CALL': return <Phone size={16} className="text-amber-500" />;
-      case 'VISIT': return <Home size={16} className="text-purple-500" />;
-      case 'TEXT': return <MessageSquare size={16} className="text-blue-500" />;
-      case 'NOTE': return <FileText size={16} className="text-zinc-500" />;
-      default: return <FileText size={16} className="text-zinc-500" />;
-    }
-  };
 
   return (
     <div className="space-y-6">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle2, Circle, Calendar, Phone, MessageSquare, Loader2, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Circle, Calendar, Phone, Loader2 } from 'lucide-react';
 import { Attendance, FollowUp } from '@/types';
 
 export default function EngagementTracker({ 
@@ -211,9 +211,8 @@ export default function EngagementTracker({
                 const attended = isAttended(week);
                 const called = getWeekFollowUp(week, 'CALL');
                 
-                const isFuture = new Date() < week; // Check if the week ending date is in the future
-                // Actually, week ending is Sunday. We might be in the middle of the week.
-                // If today is Monday, Sunday is future. But we can't mark attendance yet.
+                
+                const isFuture = new Date() < week;
                 // Simple logic: if week > now, disable?
                 // Or if week start > now?
                 // Let's use: can't mark if date > now.
