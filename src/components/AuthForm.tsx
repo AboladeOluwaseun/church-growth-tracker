@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 interface AuthFormProps {
   type: 'login' | 'signup';
@@ -14,6 +14,7 @@ export default function AuthForm({ type }: AuthFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -82,43 +83,47 @@ export default function AuthForm({ type }: AuthFormProps) {
           <form onSubmit={handleSubmit} className="space-y-5">
             {!isLogin && (
               <div className="space-y-2">
-                <label className="text-sm font-medium ml-1">Full Name</label>
+                <label htmlFor="name-input" className="text-sm font-medium ml-1">Full Name</label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors z-10">
                     <User size={18} />
                   </div>
                   <input
+                    id="name-input"
                     type="text"
                     required
                     placeholder="John Doe"
-                    className="input-field pl-12"
+                    className="input-field pl-12 pr-4"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    autoComplete="name"
                   />
                 </div>
               </div>
             )}
 
             <div className="space-y-2">
-              <label className="text-sm font-medium ml-1">Email Address</label>
+              <label htmlFor="email-input" className="text-sm font-medium ml-1">Email Address</label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors z-10">
                   <Mail size={18} />
                 </div>
                 <input
+                  id="email-input"
                   type="email"
                   required
                   placeholder="name@church.com"
-                  className="input-field pl-12"
+                  className="input-field pl-12 pr-4"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  autoComplete="email"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center ml-1">
-                <label className="text-sm font-medium">Password</label>
+                <label htmlFor="password-input" className="text-sm font-medium">Password</label>
                 {isLogin && (
                   <Link href="#" className="text-xs text-primary hover:underline font-medium opacity-80">
                     Forgot Password?
@@ -126,17 +131,27 @@ export default function AuthForm({ type }: AuthFormProps) {
                 )}
               </div>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors z-10">
                   <Lock size={18} />
                 </div>
                 <input
-                  type="password"
+                  id="password-input"
+                  type={showPassword ? "text" : "password"}
                   required
                   placeholder="••••••••"
-                  className="input-field pl-12"
+                  className="input-field pl-12 pr-12"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  autoComplete={isLogin ? "current-password" : "new-password"}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors z-10 cursor-pointer"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             </div>
 

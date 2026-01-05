@@ -87,13 +87,15 @@ export default function AdminDashboard() {
         </div>
         
         <div className="relative w-full sm:w-80 group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors z-10 pointer-events-none" size={18} />
           <input 
+            id="member-search"
             type="text" 
             placeholder="Search members..."
-            className="input-field pl-10 h-10 text-sm"
+            className="input-field pl-11 pr-4 h-10 text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label="Search members"
           />
         </div>
       </div>
