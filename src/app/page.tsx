@@ -1,38 +1,47 @@
 import Link from 'next/link';
-import { Users, TrendingUp, UserPlus, PhoneCall, Calendar, ArrowUpRight, ShieldCheck, Activity, LayoutDashboard } from "lucide-react";
+import { Users, TrendingUp, UserPlus, Calendar, ArrowUpRight, ShieldCheck, Activity, LayoutDashboard, CheckCircle2, Phone } from "lucide-react";
 import { getFirstTimers } from '@/lib/db';
 import StatCard from '@/components/StatCard';
 import GrowthChart from '@/components/GrowthChart';
 import { getServerSession } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { FirstTimer } from '@/types';
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: { view?: string } }) {
   const session = await getServerSession();
   const isAdmin = session?.role === 'ADMIN';
+  const isPersonalView = searchParams.view === 'personal';
   
+  // If user is Admin but wants personal view, treat them as member for data fetching
+  const showAdminDashboard = isAdmin && !isPersonalView;
+
   // Fetch data personalized for the user
-  const firstTimers = await getFirstTimers(isAdmin ? undefined : (session?.userId));
+  const activeFirstTimers = await getFirstTimers(showAdminDashboard ? undefined : (session?.userId));
+  const allFirstTimers = await getFirstTimers(showAdminDashboard ? undefined : (session?.userId), true);
   
   // For Admin: Fetch some global member activity metrics
   let memberCount = 0;
   let totalFollowUps = 0;
-  if (isAdmin) {
+  if (showAdminDashboard) {
     memberCount = await prisma.user.count({ where: { role: 'MEMBER' } });
     totalFollowUps = await prisma.followUp.count();
   }
 
   // Metrics Calculation
-  const total = firstTimers.length;
-  const integrated = firstTimers.filter(t => t.status === 'Integrated').length;
-  const retentionRate = total > 0 ? Math.round((integrated / total) * 100) : 0;
+  const totalActive = activeFirstTimers.length;
+  const integratedTotal = allFirstTimers.filter(t => t.isHandedOver).length;
+  const retentionRate = allFirstTimers.length > 0 ? Math.round((integratedTotal / allFirstTimers.length) * 100) : 0;
   
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  const newThisWeek = firstTimers.filter(t => new Date(t.visitDate) >= oneWeekAgo).length;
 
-  const pending = firstTimers.filter(t => t.status === 'New' || t.status === 'Contacted').length;
+  const callsDueCount = activeFirstTimers.filter(t => {
+    const lastCall = t.followUps?.find(fu => fu.type === 'CALL');
+    if (!lastCall) return true;
+    return new Date(lastCall.createdAt) < oneWeekAgo;
+  }).length;
 
-  const recentFirstTimers = [...firstTimers].sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime()).slice(0, 4);
+  const recentFirstTimers = [...activeFirstTimers].sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime()).slice(0, 4);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -41,21 +50,30 @@ export default async function Home() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            {isAdmin ? <ShieldCheck className="text-primary" /> : <LayoutDashboard className="text-primary" />}
-            {isAdmin ? 'MIU Admin Overview' : 'My Performance Dashboard'}
+            {showAdminDashboard ? <ShieldCheck className="text-primary" /> : <LayoutDashboard className="text-primary" />}
+            {showAdminDashboard ? 'MIU Admin Overview' : 'My Performance Dashboard'}
           </h1>
           <p className="text-muted-foreground mt-1">
-            {isAdmin 
+            {showAdminDashboard 
               ? 'Monitoring church-wide integration across all MIU members.' 
-              : 'Track your assigned guests and follow-up activities.'}
+              : 'Track your assigned first-timers and follow-up activities.'}
           </p>
         </div>
         <div className="flex items-center gap-3">
           {isAdmin && (
-            <Link href="/admin" className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground font-medium text-sm hover:bg-secondary/80 transition-colors flex items-center gap-2">
-              <Activity size={18} />
-              <span>Admin Console</span>
-            </Link>
+            <>
+                <Link 
+                    href={showAdminDashboard ? "/?view=personal" : "/"} 
+                    className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 border ${showAdminDashboard ? 'bg-secondary text-secondary-foreground border-border' : 'bg-primary/10 text-primary border-primary/20'}`}
+                >
+                    {showAdminDashboard ? <LayoutDashboard size={18} /> : <ShieldCheck size={18} />}
+                    <span>{showAdminDashboard ? 'Switch to Personal View' : 'Switch to Admin View'}</span>
+                </Link>
+                <Link href="/admin" className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground font-medium text-sm hover:bg-secondary/80 transition-colors flex items-center gap-2">
+                <Activity size={18} />
+                <span>Admin Console</span>
+                </Link>
+            </>
           )}
           <Link href="/first-timers/new" className="btn-primary flex items-center gap-2">
             <UserPlus size={18} />
@@ -68,35 +86,35 @@ export default async function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
           icon={<Users size={20} className="text-primary" />}
-          label={isAdmin ? "Total Guests" : "My Assigned Guests"}
-          value={total}
-          trend={isAdmin ? `${memberCount} active members` : "Target: 10/month"}
+          label={showAdminDashboard ? "Active Guests" : "Assigned Guests"}
+          value={totalActive}
+          trend={showAdminDashboard ? `${memberCount} active members` : "Active follow-ups"}
           color="bg-primary/5 border-primary/10"
         />
         <StatCard 
-          icon={<UserPlus size={20} className="text-violet-500" />}
-          label="Recent Visitors"
-          value={newThisWeek}
-          trend="Added last 7 days"
-          color="bg-violet-500/5 border-violet-500/10"
+          icon={<Phone size={20} className="text-amber-500" />}
+          label="Calls Required"
+          value={callsDueCount}
+          trend="Need follow-up this week"
+          color="bg-amber-500/5 border-amber-500/10"
         />
         <StatCard 
-          icon={<PhoneCall size={20} className="text-emerald-500" />}
-          label="Follow-ups"
-          value={pending}
-          trend={isAdmin ? `${totalFollowUps} total activities` : "Action required"}
+          icon={<CheckCircle2 size={20} className="text-emerald-500" />}
+          label="Integrated"
+          value={integratedTotal}
+          trend={showAdminDashboard ? "Church-wide total" : "Joined Family Units"}
           color="bg-emerald-500/5 border-emerald-500/10"
         />
         <StatCard 
-          icon={<TrendingUp size={20} className="text-amber-500" />}
+          icon={<TrendingUp size={20} className="text-indigo-500" />}
           label="Integration Rate"
           value={`${retentionRate}%`}
-          trend={isAdmin ? "Church-wide" : "My Goal: 60%"}
-          color="bg-amber-500/5 border-amber-500/10"
+          trend={showAdminDashboard ? "Church-wide" : "My success rate"}
+          color="bg-indigo-500/5 border-indigo-500/10"
         />
       </div>
 
-      {isAdmin && (
+      {showAdminDashboard && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Funnel Overview */}
           <div className="glass-card rounded-2xl p-6 border-border">
@@ -111,8 +129,9 @@ export default async function Home() {
                 { label: 'Visited Again', status: 'Visited', color: 'bg-emerald-500' },
                 { label: 'Fully Integrated', status: 'Integrated', color: 'bg-indigo-500' },
               ].map((step, i) => {
-                const count = firstTimers.filter(t => t.status === step.status).length;
-                const percentage = total > 0 ? (count / total) * 100 : 0;
+                const count = allFirstTimers.filter((t: FirstTimer) => t.status === step.status).length;
+                const totalAll = allFirstTimers.length;
+                const percentage = totalAll > 0 ? (count / totalAll) * 100 : 0;
                 return (
                   <div key={i} className="space-y-1.5">
                     <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground px-1">
@@ -182,7 +201,7 @@ export default async function Home() {
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-bold flex items-center gap-2">
                 <Calendar size={18} className="text-primary" />
-                {isAdmin ? 'Recent Registrations' : 'My Priority Tasks'}
+                {showAdminDashboard ? 'Recent Registrations' : 'My Priority Tasks'}
               </h3>
               <Link href="/first-timers" className="text-xs text-primary hover:underline font-medium">View All</Link>
             </div>

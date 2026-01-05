@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { firstTimerId, notes } = await request.json();
+    const { firstTimerId, notes, type } = await request.json();
 
     if (!firstTimerId) {
       return NextResponse.json({ error: 'First Timer ID is required' }, { status: 400 });
@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
         userId: session.userId as string,
         firstTimerId: firstTimerId as string,
         notes: notes as string,
+        type: type || 'NOTE',
       },
       include: {
         user: {

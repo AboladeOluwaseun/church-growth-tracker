@@ -1,16 +1,17 @@
 import { getFirstTimer } from '@/lib/db';
-import StatusActions from '@/components/StatusActions';
 import Link from 'next/link';
-import { ChevronLeft, MapPin, Calendar, Phone, MessageSquare } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { 
+  ArrowLeft, 
+  User, 
+  MapPin, 
+  Calendar, 
+  Phone, 
+  MoreVertical,
+} from 'lucide-react';
 import FollowUpLog from '@/components/FollowUpLog';
-
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const person = await getFirstTimer(params.id);
-  return {
-    title: person ? `${person.firstName} ${person.lastName} | Feeding Centre` : 'Guest Not Found',
-  };
-}
+import EngagementTracker from '@/components/EngagementTracker'; // New
+import { FirstTimer, FollowUpType } from '@/types';
 
 export default async function FirstTimerDetailPage({ params }: { params: { id: string } }) {
   const person = await getFirstTimer(params.id);
@@ -19,114 +20,112 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
     notFound();
   }
 
-  return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <Link href="/first-timers" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-        <ChevronLeft size={16} /> Back to Directory
-      </Link>
+  // const progress = ['New', 'Contacted', 'Visited', 'Integrated']; // Removed
+  // const currentStep = progress.indexOf(person.status); // Removed
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Info Card */}
-        <div className="lg:col-span-2 space-y-8">
-          <div className="glass-card p-8 rounded-2xl relative overflow-hidden bg-card">
-            <div className="flex items-start justify-between mb-10 relative">
-              <div className="flex gap-6 items-center">
-                <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center text-3xl font-bold text-primary-foreground shadow-2xl shadow-primary/20">
-                  {person.firstName[0]}{person.lastName[0]}
-                </div>
+  return (
+    <div className="min-h-screen bg-background pb-20 md:pb-10">
+      {/* Header */}
+      <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-border">
+        <div className="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
+          <Link 
+            href="/" 
+            className="w-10 h-10 -ml-2 flex items-center justify-center rounded-full hover:bg-secondary transition-colors"
+          >
+            <ArrowLeft size={20} className="text-muted-foreground" />
+          </Link>
+          <div className="flex items-center gap-2">
+            {person.isHandedOver && (
+              <span className="px-2 py-0.5 bg-indigo-500/10 text-indigo-500 text-[10px] font-bold uppercase tracking-wider rounded-full border border-indigo-500/20">
+                Family Unit Member
+              </span>
+            )}
+            <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-secondary transition-colors">
+              <MoreVertical size={20} className="text-muted-foreground" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-3xl mx-auto px-4 mt-6 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        
+        {/* Profile Card */}
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-sm relative overflow-hidden">
+           <div className="absolute top-0 right-0 p-6 opacity-5">
+             <User size={120} />
+           </div>
+           
+           <div className="relative z-10">
+             <div className="flex items-start justify-between mb-6">
                 <div>
-                  <h1 className="text-3xl font-bold tracking-tight">{person.firstName} {person.lastName}</h1>
+                  <h1 className="text-2xl font-black tracking-tight text-foreground">
+                    {person.firstName} {person.lastName}
+                  </h1>
                   <div className="flex items-center gap-2 text-muted-foreground mt-1 text-sm font-medium">
                     <Calendar size={14} />
-                    <span>First visit: {person.visitDate}</span>
+                    <span>Visited {new Date(person.visitDate).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                   </div>
                 </div>
-              </div>
-            </div>
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${
+                  person.status === 'New' ? 'bg-blue-500 text-white shadow-blue-500/20' :
+                  person.status === 'Contacted' ? 'bg-amber-500 text-white shadow-amber-500/20' :
+                  person.status === 'Visited' ? 'bg-purple-500 text-white shadow-purple-500/20' :
+                  'bg-emerald-500 text-white shadow-emerald-500/20'
+                }`}>
+                  <User size={24} strokeWidth={2.5} />
+                </div>
+             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Contact Details</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 text-foreground font-medium">
-                      <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground">
-                        <Phone size={16} />
-                      </div>
-                      <span className="text-lg">{person.phone}</span>
+             <div className="space-y-4">
+                <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-2xl hover:bg-secondary transition-colors group">
+                  <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
+                    <Phone size={18} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Phone</p>
+                    <p className="font-semibold text-foreground">{person.phone}</p>
+                  </div>
+                  <a href={`tel:${person.phone}`} className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                    Call
+                  </a>
+                </div>
+
+                {person.address && (
+                  <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-muted-foreground">
+                      <MapPin size={18} />
                     </div>
-                    <div className="flex items-center gap-3 text-muted-foreground text-sm">
-                      <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground">
-                        <MapPin size={16} />
-                      </div>
-                      <span>{person.address || 'No address provided'}</span>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Address</p>
+                      <p className="font-semibold text-foreground">{person.address}</p>
                     </div>
                   </div>
-                </div>
+                )}
+             </div>
+           </div>
+        </div>
 
-                <div>
-                  <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Prayer Request</h3>
-                  <div className="p-5 bg-secondary/50 rounded-2xl text-foreground font-medium border border-border italic text-sm leading-relaxed">
-                    {person.prayerRequest ? `&quot;${person.prayerRequest}&quot;` : "None recorded."}
-                  </div>
-                </div>
-              </div>
+        {/* Integration Actions */}
+        {/* <StatusActions person={person} /> */} {/* Removed */}
 
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Staff Notes</h3>
-                  <div className="p-5 bg-secondary/30 rounded-2xl text-muted-foreground border border-dashed border-border text-sm leading-relaxed">
-                    {person.notes || 'No additional notes provided for this guest.'}
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Weekly Engagement Tracker */}
+          <div className="bg-card border border-border rounded-3xl p-6 shadow-sm h-fit">
+            <EngagementTracker 
+              firstTimerId={person.id} 
+              initialAttendances={person.attendances} 
+              initialFollowUps={person.followUps}
+              isHandedOver={person.isHandedOver}
+              visitDate={person.visitDate}
+            />
           </div>
 
-          <div className="glass-card p-8 rounded-2xl bg-card">
-            <FollowUpLog firstTimerId={person.id} />
+          {/* Follow Up Log */}
+          <div className="bg-card border border-border rounded-3xl p-6 shadow-sm h-fit">
+             <FollowUpLog firstTimerId={person.id} initialLogs={person.followUps} />
           </div>
         </div>
 
-        {/* Sidebar Status / Actions */}
-        <div className="space-y-8">
-          <div className="glass-card p-6 rounded-2xl bg-card">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-6">Integration Progress</h2>
-            <div className="relative pt-2">
-               <div className="flex items-center justify-between mb-4">
-                 <span className="text-2xl font-black text-primary">{person.status}</span>
-                 <div className="px-2 py-1 rounded bg-secondary text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">Current Status</div>
-               </div>
-               
-               <div className="w-full bg-secondary h-2.5 rounded-full overflow-hidden mb-8">
-                  <div 
-                    className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(var(--primary),0.5)]" 
-                    style={{ 
-                      width: person.status === 'New' ? '25%' : 
-                             person.status === 'Contacted' ? '50%' :
-                             person.status === 'Visited' ? '75%' : '100%' 
-                    }}
-                  ></div>
-               </div>
-
-              <StatusActions id={person.id} currentStatus={person.status} />
-            </div>
-          </div>
-
-          <div className="glass-card p-6 rounded-2xl bg-card">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-6">Engagement Tools</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <button className="flex flex-col items-center justify-center gap-3 p-4 rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all font-bold shadow-lg shadow-primary/20">
-                <Phone size={24} />
-                <span className="text-xs">Call Guest</span>
-              </button>
-              <button className="flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border border-border hover:bg-secondary text-foreground transition-all font-bold">
-                <MessageSquare size={24} />
-                <span className="text-xs">Send Message</span>
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

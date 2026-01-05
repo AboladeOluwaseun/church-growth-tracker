@@ -18,11 +18,13 @@ model FirstTimer {
   prayerRequest String?
   notes         String?
   status        String   @default("New")
+  isHandedOver  Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   assignedTo    User?    @relation(fields: [assignedToId], references: [id])
   assignedToId  String?
   followUps     FollowUp[]
+  attendances   Attendance[]
 }
 
 model User {
@@ -35,20 +37,40 @@ model User {
   updatedAt     DateTime     @updatedAt
   assignedItems FirstTimer[]
   followUps     FollowUp[]
+  attendances   Attendance[]
 }
 
 enum Role {
   ADMIN
   MEMBER
 }
+
+enum FollowUpType {
+  CALL
+  NOTE
+  VISIT
+  TEXT
+}
+
 model FollowUp {
   id            String   @id @default(cuid())
   user          User     @relation(fields: [userId], references: [id])
   userId        String
-  firstTimer    FirstTimer @relation(fields: [firstTimerId], references: [id])
+  firstTimer    FirstTimer @relation(fields: [firstTimerId], references: [id], onDelete: Cascade)
   firstTimerId  String
+  type          FollowUpType @default(NOTE)
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model Attendance {
+  id           String     @id @default(cuid())
+  date         DateTime
+  firstTimer   FirstTimer @relation(fields: [firstTimerId], references: [id], onDelete: Cascade)
+  firstTimerId String
+  createdAt    DateTime   @default(now())
+  user         User?      @relation(fields: [userId], references: [id])
+  userId       String?
 }
 

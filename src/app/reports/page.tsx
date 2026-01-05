@@ -1,9 +1,13 @@
 import { getWeeklyReportData } from "@/lib/db";
-import { ChevronRight, FileDown, Printer, Share2, Heart, Users, CheckCircle2, Clock } from "lucide-react";
+import { ChevronRight, FileDown, Printer, Share2, Heart, Users, CheckCircle2, Clock, ShieldCheck, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
+import { getServerSession } from "@/lib/auth";
 
 export default async function ReportsPage() {
-  const data = await getWeeklyReportData();
+  const session = await getServerSession();
+  const isAdmin = session?.role === 'ADMIN';
+  
+  const data = await getWeeklyReportData(isAdmin ? undefined : session?.userId);
   const dateRange = {
     start: new Date(new Date().setDate(new Date().getDate() - 7)).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     end: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -14,9 +18,14 @@ export default async function ReportsPage() {
       {/* Report Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tight mb-2">Weekly Growth Report</h1>
+          <h1 className="text-3xl font-black tracking-tight mb-2 flex items-center gap-3">
+            {isAdmin ? <ShieldCheck className="text-primary" /> : <LayoutDashboard className="text-primary" />}
+            {isAdmin ? 'Church Growth Report' : 'Personal Performance Report'}
+          </h1>
           <p className="text-muted-foreground font-medium flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold uppercase tracking-widest">Active Week</span>
+            <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold uppercase tracking-widest">
+              {isAdmin ? 'Church-wide' : 'Personal'}
+            </span>
             {dateRange.start} — {dateRange.end}
           </p>
         </div>

@@ -1,9 +1,15 @@
 import { submitFirstTimer } from '@/app/actions';
 import SubmitButton from '@/components/SubmitButton';
 import Link from 'next/link';
-import { ChevronLeft, UserPlus } from 'lucide-react';
+import { ChevronLeft, UserPlus, Users } from 'lucide-react';
+import { getServerSession } from '@/lib/auth';
+import { getAllUsers } from '@/lib/db';
 
-export default function NewFirstTimerPage() {
+export default async function NewFirstTimerPage() {
+  const session = await getServerSession();
+  const isAdmin = session?.role === 'ADMIN';
+  const members = isAdmin ? await getAllUsers() : [];
+
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <Link href="/first-timers" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
@@ -48,6 +54,25 @@ export default function NewFirstTimerPage() {
             <label className="text-sm font-semibold text-foreground/80">Home Address</label>
             <input name="address" type="text" placeholder="123 Street, City" className="input-field" />
           </div>
+
+           {/* Admin Assignment Section */}
+           {isAdmin && (
+            <div className="space-y-3 p-4 border border-dashed border-border rounded-xl bg-secondary/20">
+              <label className="text-sm font-bold text-primary flex items-center gap-2">
+                 <Users size={16} />
+                 Assign To Member (Admin Only)
+              </label>
+              <select name="assignedToId" className="input-field cursor-pointer" defaultValue={session?.userId}>
+                <option value={session?.userId}>Assign to Me (Default)</option>
+                {members.filter(m => m.id !== session?.userId).map(member => (
+                   <option key={member.id} value={member.id}>
+                     {member.name} ({member.role === 'ADMIN' ? 'Admin' : 'Member'})
+                   </option>
+                ))}
+              </select>
+              <p className="text-xs text-muted-foreground">Select who should be responsible for following up with this guest.</p>
+            </div>
+           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-3">

@@ -11,7 +11,7 @@ export async function GET() {
 
     const userModel = prisma.user;
     const members = await userModel.findMany({
-      where: { role: 'MEMBER' },
+      where: {},
       include: {
         assignedItems: {
           select: {

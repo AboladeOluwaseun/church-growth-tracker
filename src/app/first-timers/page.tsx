@@ -9,7 +9,7 @@ export const metadata = {
 
 export default async function FirstTimersPage() {
   const session = await getServerSession();
-  const firstTimers = await getFirstTimers();
+  const firstTimers = await getFirstTimers(undefined, true);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
