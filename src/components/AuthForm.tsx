@@ -93,7 +93,7 @@ export default function AuthForm({ type }: AuthFormProps) {
                     type="text"
                     required
                     placeholder="John Doe"
-                    className="input-field pl-14 pr-4"
+                    className="input-field !pl-14 pr-4"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     autoComplete="name"
@@ -113,7 +113,7 @@ export default function AuthForm({ type }: AuthFormProps) {
                   type="email"
                   required
                   placeholder="name@church.com"
-                  className="input-field pl-14 pr-4"
+                  className="input-field !pl-14 pr-4"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   autoComplete="email"
@@ -139,7 +139,7 @@ export default function AuthForm({ type }: AuthFormProps) {
                   type={showPassword ? "text" : "password"}
                   required
                   placeholder="••••••••"
-                  className="input-field pl-14 pr-12"
+                  className="input-field !pl-14 pr-12"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   autoComplete={isLogin ? "current-password" : "new-password"}

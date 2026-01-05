@@ -92,7 +92,7 @@ export default function AdminDashboard() {
             id="member-search"
             type="text" 
             placeholder="Search members..."
-            className="input-field pl-11 pr-4 h-10 text-sm"
+            className="input-field !pl-11 pr-4 h-10 text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             aria-label="Search members"
