@@ -83,10 +83,17 @@ export default async function Home({ searchParams }: { searchParams: { view?: st
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <StatCard 
+          icon={<Users size={20} className="text-blue-500" />}
+          label={showAdminDashboard ? "Total First Timers" : "Total Assigned"}
+          value={allFirstTimers.length}
+          trend="All time"
+          color="bg-blue-500/5 border-blue-500/10"
+        />
         <StatCard 
           icon={<Users size={20} className="text-primary" />}
-          label={showAdminDashboard ? "Active Guests" : "Assigned Guests"}
+          label={showAdminDashboard ? "Active Guests" : "Currently Active"}
           value={totalActive}
           trend={showAdminDashboard ? `${memberCount} active members` : "Active follow-ups"}
           color="bg-primary/5 border-primary/10"
