@@ -86,14 +86,14 @@ export default function AuthForm({ type }: AuthFormProps) {
                 <label htmlFor="name-input" className="text-sm font-medium ml-1">Full Name</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors z-10">
-                    <User size={18} />
+                    <User size={16} />
                   </div>
                   <input
                     id="name-input"
                     type="text"
                     required
                     placeholder="John Doe"
-                    className="input-field pl-12 pr-4"
+                    className="input-field pl-14 pr-4"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     autoComplete="name"
@@ -106,14 +106,14 @@ export default function AuthForm({ type }: AuthFormProps) {
               <label htmlFor="email-input" className="text-sm font-medium ml-1">Email Address</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors z-10">
-                  <Mail size={18} />
+                  <Mail size={16} />
                 </div>
                 <input
                   id="email-input"
                   type="email"
                   required
                   placeholder="name@church.com"
-                  className="input-field pl-12 pr-4"
+                  className="input-field pl-14 pr-4"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   autoComplete="email"
@@ -132,14 +132,14 @@ export default function AuthForm({ type }: AuthFormProps) {
               </div>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors z-10">
-                  <Lock size={18} />
+                  <Lock size={16} />
                 </div>
                 <input
                   id="password-input"
                   type={showPassword ? "text" : "password"}
                   required
                   placeholder="••••••••"
-                  className="input-field pl-12 pr-12"
+                  className="input-field pl-14 pr-12"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   autoComplete={isLogin ? "current-password" : "new-password"}
@@ -147,10 +147,11 @@ export default function AuthForm({ type }: AuthFormProps) {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors z-10 cursor-pointer"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors z-10 cursor-pointer focus:outline-none"
                   aria-label={showPassword ? "Hide password" : "Show password"}
+                  tabIndex={-1}
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
