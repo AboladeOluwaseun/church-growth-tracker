@@ -47,38 +47,44 @@ export default async function Home({ searchParams }: { searchParams: { view?: st
     <div className="space-y-8 animate-in fade-in duration-500">
       
       {/* Welcome Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            {showAdminDashboard ? <ShieldCheck className="text-primary" /> : <LayoutDashboard className="text-primary" />}
-            {showAdminDashboard ? 'MIU Admin Overview' : 'My Performance Dashboard'}
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            {showAdminDashboard 
-              ? 'Monitoring church-wide integration across all MIU members.' 
-              : 'Track your assigned first-timers and follow-up activities.'}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {isAdmin && (
-            <>
-                <Link 
-                    href={showAdminDashboard ? "/?view=personal" : "/"} 
-                    className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 border ${showAdminDashboard ? 'bg-secondary text-secondary-foreground border-border' : 'bg-primary/10 text-primary border-primary/20'}`}
-                >
-                    {showAdminDashboard ? <LayoutDashboard size={18} /> : <ShieldCheck size={18} />}
-                    <span>{showAdminDashboard ? 'Switch to Personal View' : 'Switch to Admin View'}</span>
-                </Link>
-                <Link href="/admin" className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground font-medium text-sm hover:bg-secondary/80 transition-colors flex items-center gap-2">
-                <Activity size={18} />
-                <span>Admin Console</span>
-                </Link>
-            </>
-          )}
-          <Link href="/first-timers/new" className="btn-primary flex items-center gap-2">
-            <UserPlus size={18} />
-            <span>New Guest</span>
-          </Link>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
+              {showAdminDashboard ? <ShieldCheck className="text-primary flex-shrink-0" size={20} /> : <LayoutDashboard className="text-primary flex-shrink-0" size={20} />}
+              <span className="truncate">
+                {showAdminDashboard ? 'MIU Admin Overview' : 'My Performance Dashboard'}
+              </span>
+            </h1>
+            <p className="text-muted-foreground mt-1 text-sm">
+              {showAdminDashboard 
+                ? 'Monitoring church-wide integration across all MIU members.' 
+                : 'Track your assigned first-timers and follow-up activities.'}
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            {isAdmin && (
+              <>
+                  <Link 
+                      href={showAdminDashboard ? "/?view=personal" : "/"} 
+                      className={`px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 border whitespace-nowrap ${showAdminDashboard ? 'bg-secondary text-secondary-foreground border-border' : 'bg-primary/10 text-primary border-primary/20'}`}
+                  >
+                      {showAdminDashboard ? <LayoutDashboard size={16} /> : <ShieldCheck size={16} />}
+                      <span className="hidden sm:inline">{showAdminDashboard ? 'Switch to Personal View' : 'Switch to Admin View'}</span>
+                      <span className="sm:hidden">{showAdminDashboard ? 'Personal' : 'Admin'}</span>
+                  </Link>
+                  <Link href="/admin" className="px-3 sm:px-4 py-2 rounded-lg bg-secondary text-secondary-foreground font-medium text-xs sm:text-sm hover:bg-secondary/80 transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
+                    <Activity size={16} />
+                    <span className="hidden sm:inline">Admin Console</span>
+                    <span className="sm:hidden">Console</span>
+                  </Link>
+              </>
+            )}
+            <Link href="/first-timers/new" className="btn-primary flex items-center justify-center gap-2 text-sm sm:text-base whitespace-nowrap">
+              <UserPlus size={16} />
+              <span>New Guest</span>
+            </Link>
+          </div>
         </div>
       </div>
 

@@ -14,33 +14,49 @@ export default async function ReportsPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="max-w-5xl mx-auto space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Report Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 className="text-3xl font-black tracking-tight mb-2 flex items-center gap-3">
-            {isAdmin ? <ShieldCheck className="text-primary" /> : <LayoutDashboard className="text-primary" />}
-            {isAdmin ? 'Church Growth Report' : 'Personal Performance Report'}
-          </h1>
-          <p className="text-muted-foreground font-medium flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold uppercase tracking-widest">
-              {isAdmin ? 'Church-wide' : 'Personal'}
-            </span>
-            {dateRange.start} — {dateRange.end}
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <button className="p-3 rounded-xl border border-border bg-card hover:bg-secondary transition-all text-muted-foreground active:scale-95">
-            <Printer size={20} />
-          </button>
-          <button className="p-3 rounded-xl border border-border bg-card hover:bg-secondary transition-all text-muted-foreground active:scale-95">
-            <Share2 size={20} />
-          </button>
-          <button className="btn-primary flex items-center gap-3 h-12 px-6 rounded-xl hover:scale-[1.02]">
-            <FileDown size={20} />
-            <span className="text-sm font-bold uppercase tracking-widest">Export PDF</span>
-          </button>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-2 flex items-center gap-2 sm:gap-3">
+              {isAdmin ? <ShieldCheck className="text-primary flex-shrink-0" size={24} /> : <LayoutDashboard className="text-primary flex-shrink-0" size={24} />}
+              <span className="truncate">
+                {isAdmin ? (
+                  <>
+                    <span className="hidden sm:inline">Church Growth Report</span>
+                    <span className="sm:hidden">Growth Report</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="hidden sm:inline">Personal Performance Report</span>
+                    <span className="sm:hidden">My Report</span>
+                  </>
+                )}
+              </span>
+            </h1>
+            <p className="text-muted-foreground font-medium flex flex-wrap items-center gap-2 text-sm">
+              <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-bold uppercase tracking-widest whitespace-nowrap">
+                {isAdmin ? 'Church-wide' : 'Personal'}
+              </span>
+              <span className="text-xs sm:text-sm">{dateRange.start} — {dateRange.end}</span>
+            </p>
+          </div>
+          
+          {/* Action Buttons - Responsive */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            {/* Hide secondary buttons on mobile, show on md+ */}
+            <button className="hidden md:flex p-3 rounded-xl border border-border bg-card hover:bg-secondary transition-all text-muted-foreground active:scale-95" aria-label="Print">
+              <Printer size={20} />
+            </button>
+            <button className="hidden md:flex p-3 rounded-xl border border-border bg-card hover:bg-secondary transition-all text-muted-foreground active:scale-95" aria-label="Share">
+              <Share2 size={20} />
+            </button>
+            <button className="btn-primary flex items-center justify-center gap-2 sm:gap-3 h-11 sm:h-12 px-4 sm:px-6 rounded-xl hover:scale-[1.02] flex-1 sm:flex-initial">
+              <FileDown size={18} className="flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-widest">Export PDF</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -65,25 +81,25 @@ export default async function ReportsPage() {
                 <Link 
                   href={`/first-timers/${guest.id}`} 
                   key={guest.id}
-                  className="flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors group"
+                  className="flex items-center justify-between p-3 sm:p-4 hover:bg-secondary/50 transition-colors group"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                  <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xs sm:text-sm flex-shrink-0">
                       {guest.firstName[0]}{guest.lastName[0]}
                     </div>
-                    <div>
-                      <p className="font-bold text-sm group-hover:text-primary transition-colors">{guest.firstName} {guest.lastName}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-sm group-hover:text-primary transition-colors truncate">{guest.firstName} {guest.lastName}</p>
                       <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{guest.visitDate}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
+                  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <span className={`text-[9px] sm:text-[10px] font-bold uppercase px-1.5 sm:px-2 py-0.5 rounded whitespace-nowrap ${
                       guest.status === 'Integrated' ? 'bg-indigo-500/10 text-indigo-500' : 
                       guest.status === 'Visited' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-secondary text-muted-foreground'
                     }`}>
                       {guest.status}
                     </span>
-                    <ChevronRight size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                    <ChevronRight size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 hidden sm:block" />
                   </div>
                 </Link>
               ))}
@@ -105,11 +121,11 @@ export default async function ReportsPage() {
                 Prayer Petitions
               </h2>
             </div>
-            <div className="p-6 space-y-6 max-h-[600px] overflow-y-auto custom-scrollbar">
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-h-[600px] overflow-y-auto custom-scrollbar">
               {data.prayerRequests.map((req: { name: string; request: string }, i: number) => (
-                <div key={i} className="space-y-2 border-b border-border last:border-0 pb-6 last:pb-0">
-                  <p className="text-xs font-bold text-primary uppercase tracking-widest">{req.name}</p>
-                  <p className="text-sm font-medium leading-relaxed italic text-foreground/80">&quot;{req.request}&quot;</p>
+                <div key={i} className="space-y-2 border-b border-border last:border-0 pb-4 sm:pb-6 last:pb-0">
+                  <p className="text-xs font-bold text-primary uppercase tracking-widest break-words">{req.name}</p>
+                  <p className="text-sm font-medium leading-relaxed italic text-foreground/80 break-words">&quot;{req.request}&quot;</p>
                 </div>
               ))}
               {data.prayerRequests.length === 0 && (

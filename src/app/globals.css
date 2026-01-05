@@ -93,6 +93,7 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
     height: 4px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -100,5 +101,28 @@
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground/20 hover:bg-muted-foreground/40 rounded-full transition-colors;
+  }
+  
+  /* Mobile-specific utilities */
+  @media (max-width: 640px) {
+    .glass-card {
+      @apply shadow-sm;
+    }
+  }
+}
+
+/* Prevent horizontal overflow on mobile */
+@layer base {
+  html {
+    @apply overflow-x-hidden;
+  }
+  
+  body {
+    @apply overflow-x-hidden;
+  }
+  
+  /* Ensure main content areas have proper padding on mobile */
+  main {
+    @apply px-4 sm:px-6 lg:px-8;
   }
 }
