@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Phone, Home, MessageSquare, Send, Clock, CheckCircle2 } from 'lucide-react';
+import { FileText, Phone, MessageSquare, Send, Clock, CheckCircle2 } from 'lucide-react';
 import { FollowUp, FollowUpType } from '@/types';
 
 

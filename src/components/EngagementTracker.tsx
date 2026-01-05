@@ -211,9 +211,7 @@ export default function EngagementTracker({
                 const attended = isAttended(week);
                 const called = getWeekFollowUp(week, 'CALL');
                 
-                
-                const isFuture = new Date() < week;
-                // Simple logic: if week > now, disable?
+                // Check if the week ending date is in the future
                 // Or if week start > now?
                 // Let's use: can't mark if date > now.
                 

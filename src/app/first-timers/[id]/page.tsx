@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import FollowUpLog from '@/components/FollowUpLog';
 import EngagementTracker from '@/components/EngagementTracker'; // New
-import { FollowUpType } from '@/types';
 
 export default async function FirstTimerDetailPage({ params }: { params: { id: string } }) {
   const person = await getFirstTimer(params.id);
