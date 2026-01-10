@@ -9,22 +9,30 @@ datasource db {
 }
 
 model FirstTimer {
-  id            String   @id @default(cuid())
-  firstName     String
-  lastName      String
-  phone         String
-  address       String?
-  visitDate     String   // Keeping as string for now to match frontend/JSON data
-  prayerRequest String?
-  notes         String?
-  status        String   @default("New")
-  isHandedOver  Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  assignedTo    User?    @relation(fields: [assignedToId], references: [id])
-  assignedToId  String?
-  followUps     FollowUp[]
-  attendances   Attendance[]
+  id                  String       @id @default(cuid())
+  firstName           String
+  lastName            String
+  phone               String
+  address             String?
+  visitDate           String
+  prayerRequest       String?
+  status              String       @default("New")
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  assignedToId        String?
+  isHandedOver        Boolean      @default(false)
+  discoverySource     String?
+  dob                 String?
+  email               String?
+  isBornAgain         String?
+  isHolyGhostBaptized String?
+  occupation          String?
+  preferredVisitTime  String?
+  serviceComment      String?
+  sex                 String?
+  attendances         Attendance[]
+  assignedTo          User?        @relation(fields: [assignedToId], references: [id])
+  followUps           FollowUp[]
 }
 
 model User {
@@ -35,9 +43,31 @@ model User {
   role          Role         @default(MEMBER)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+  attendances   Attendance[]
   assignedItems FirstTimer[]
   followUps     FollowUp[]
-  attendances   Attendance[]
+}
+
+model FollowUp {
+  id           String       @id @default(cuid())
+  userId       String
+  firstTimerId String
+  notes        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  type         FollowUpType @default(NOTE)
+  firstTimer   FirstTimer   @relation(fields: [firstTimerId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id])
+}
+
+model Attendance {
+  id           String     @id @default(cuid())
+  date         DateTime
+  firstTimerId String
+  createdAt    DateTime   @default(now())
+  userId       String?
+  firstTimer   FirstTimer @relation(fields: [firstTimerId], references: [id], onDelete: Cascade)
+  user         User?      @relation(fields: [userId], references: [id])
 }
 
 enum Role {
@@ -51,26 +81,3 @@ enum FollowUpType {
   VISIT
   TEXT
 }
-
-model FollowUp {
-  id            String   @id @default(cuid())
-  user          User     @relation(fields: [userId], references: [id])
-  userId        String
-  firstTimer    FirstTimer @relation(fields: [firstTimerId], references: [id], onDelete: Cascade)
-  firstTimerId  String
-  type          FollowUpType @default(NOTE)
-  notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model Attendance {
-  id           String     @id @default(cuid())
-  date         DateTime
-  firstTimer   FirstTimer @relation(fields: [firstTimerId], references: [id], onDelete: Cascade)
-  firstTimerId String
-  createdAt    DateTime   @default(now())
-  user         User?      @relation(fields: [userId], references: [id])
-  userId       String?
-}
-

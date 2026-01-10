@@ -39,10 +39,46 @@ export default async function NewFirstTimerPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="space-y-3">
               <label className="text-sm font-semibold text-foreground/80">Phone Number</label>
-              <input required name="phone" type="tel" placeholder="555-000-0000" className="input-field" />
+              <input required name="phone" type="tel" placeholder="080..." className="input-field" />
+            </div>
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-foreground/80">Email Address</label>
+              <input name="email" type="email" placeholder="john@example.com" className="input-field" />
+            </div>
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-foreground/80">Occupation</label>
+              <input name="occupation" type="text" placeholder="Engineer, Student, etc." className="input-field" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+             <div className="space-y-3">
+              <label className="text-sm font-semibold text-foreground/80">Sex</label>
+              <select name="sex" className="input-field cursor-pointer">
+                <option value="">Select Sex</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-foreground/80">Date of Birth (Month & Day)</label>
+              <div className="flex gap-4">
+                <select name="dobMonth" className="input-field cursor-pointer flex-1">
+                  <option value="">Month</option>
+                  {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m, idx) => (
+                    <option key={m} value={idx + 1}>{m}</option>
+                  ))}
+                </select>
+                <select name="dobDay" className="input-field cursor-pointer w-24">
+                  <option value="">Day</option>
+                  {Array.from({ length: 31 }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>{i + 1}</option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="space-y-3">
               <label className="text-sm font-semibold text-foreground/80">Visit Date</label>
@@ -50,9 +86,34 @@ export default async function NewFirstTimerPage() {
             </div>
           </div>
 
-          <div className="space-y-3">
-            <label className="text-sm font-semibold text-foreground/80">Home Address</label>
-            <input name="address" type="text" placeholder="123 Street, City" className="input-field" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-foreground/80">House Address</label>
+              <input name="address" type="text" placeholder="123 Street, City" className="input-field" />
+            </div>
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-foreground/80">When will you like to be visited?</label>
+              <input name="preferredVisitTime" type="text" placeholder="e.g. Saturday Evenings" className="input-field" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 bg-secondary/30 rounded-2xl border border-border">
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-foreground/80">Are you born again?</label>
+              <select name="isBornAgain" className="input-field cursor-pointer">
+                <option value="">Select Option</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-foreground/80">Baptized in the Holy Ghost (with evidence of tongues)?</label>
+              <select name="isHolyGhostBaptized" className="input-field cursor-pointer">
+                <option value="">Select Option</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
           </div>
 
            {/* Admin Assignment Section */}
@@ -74,14 +135,21 @@ export default async function NewFirstTimerPage() {
             </div>
            )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-6">
             <div className="space-y-3">
-              <label className="text-sm font-semibold text-foreground/80">Prayer Request</label>
-              <textarea name="prayerRequest" rows={3} placeholder="Describe specific prayer needs..." className="input-field resize-none"></textarea>
+              <label className="text-sm font-semibold text-foreground/80">How did you get to know about feeding centre?</label>
+              <input name="discoverySource" type="text" placeholder="Friend, Social Media, etc." className="input-field" />
             </div>
-            <div className="space-y-3">
-              <label className="text-sm font-semibold text-foreground/80">Additional Notes</label>
-              <textarea name="notes" rows={3} placeholder="Interests, family details, etc." className="input-field resize-none"></textarea>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-foreground/80">Prayer Request</label>
+                <textarea name="prayerRequest" rows={3} placeholder="Describe specific prayer needs..." className="input-field resize-none"></textarea>
+              </div>
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-foreground/80">Comment about today's service</label>
+                <textarea name="serviceComment" rows={3} placeholder="Tell us about your experience..." className="input-field resize-none"></textarea>
+              </div>
             </div>
           </div>
 

@@ -75,32 +75,120 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
                 </div>
              </div>
 
-             <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-2xl hover:bg-secondary transition-colors group">
-                  <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
-                    <Phone size={18} />
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest border-b border-border pb-2">Personal & Contact</h3>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground">
+                      <Phone size={14} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Phone</p>
+                      <p className="text-sm font-semibold">{person.phone}</p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Phone</p>
-                    <p className="font-semibold text-foreground">{person.phone}</p>
+
+                  {person.email && (
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground">
+                        <User size={14} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase">Email</p>
+                        <p className="text-sm font-semibold">{person.email}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {person.address && (
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-muted-foreground">
+                        <MapPin size={14} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase">House Address</p>
+                        <p className="text-sm font-semibold">{person.address}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-4 pt-2">
+                    {person.sex && (
+                      <div>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase">Sex</p>
+                        <p className="text-sm font-semibold">{person.sex}</p>
+                      </div>
+                    )}
+                    {person.dob && (
+                      <div>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase">DOB</p>
+                        <p className="text-sm font-semibold">
+                          {(() => {
+                            const [m, d] = person.dob.split('-');
+                            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                            return `${months[parseInt(m) - 1]} ${d}`;
+                          })()}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <a href={`tel:${person.phone}`} className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
-                    Call
-                  </a>
+
+                  {person.occupation && (
+                    <div className="pt-2">
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Occupation</p>
+                      <p className="text-sm font-semibold">{person.occupation}</p>
+                    </div>
+                  )}
                 </div>
 
-                {person.address && (
-                  <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-muted-foreground">
-                      <MapPin size={18} />
+                <div className="space-y-4">
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest border-b border-border pb-2">Spiritual & Service</h3>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Born Again</p>
+                      <p className={`text-sm font-bold ${person.isBornAgain === 'Yes' ? 'text-emerald-500' : 'text-amber-500'}`}>
+                        {person.isBornAgain || 'N/A'}
+                      </p>
                     </div>
-                    <div className="flex-1">
-                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Address</p>
-                      <p className="font-semibold text-foreground">{person.address}</p>
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Ghost Baptized</p>
+                      <p className={`text-sm font-bold ${person.isHolyGhostBaptized === 'Yes' ? 'text-emerald-500' : 'text-amber-500'}`}>
+                        {person.isHolyGhostBaptized || 'N/A'}
+                      </p>
                     </div>
                   </div>
-                )}
+
+                  {person.preferredVisitTime && (
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Preferred Visit</p>
+                      <p className="text-sm font-semibold">{person.preferredVisitTime}</p>
+                    </div>
+                  )}
+
+                  {person.discoverySource && (
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Source</p>
+                      <p className="text-sm font-semibold">{person.discoverySource}</p>
+                    </div>
+                  )}
+
+                  {person.serviceComment && (
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Service Comment</p>
+                      <p className="text-xs text-muted-foreground italic leading-relaxed">"{person.serviceComment}"</p>
+                    </div>
+                  )}
+                </div>
              </div>
+
+             {person.prayerRequest && (
+               <div className="mt-8 p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                 <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Prayer Request</p>
+                 <p className="text-sm font-medium text-foreground leading-relaxed">{person.prayerRequest}</p>
+               </div>
+             )}
            </div>
         </div>
 

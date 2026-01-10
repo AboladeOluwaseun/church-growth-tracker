@@ -15,11 +15,19 @@ export interface FirstTimer {
   lastName: string;
   phone: string;
   address?: string | null;
+  email?: string | null;
+  occupation?: string | null;
+  sex?: string | null;
+  dob?: string | null;
+  preferredVisitTime?: string | null;
+  isBornAgain?: string | null;
+  isHolyGhostBaptized?: string | null;
+  discoverySource?: string | null;
+  serviceComment?: string | null;
   visitDate: string; // ISO date string
   prayerRequest?: string | null;
   status: 'New' | 'Contacted' | 'Visited' | 'Integrated';
   isHandedOver: boolean;
-  notes?: string | null;
   assignedToId?: string | null;
   assignedTo?: User | null;
   attendances?: Attendance[];

@@ -17,7 +17,7 @@ export default async function FirstTimersPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
             <Users size={24} className="text-primary" />
-            Guest Directory
+            First Timers Directory
           </h1>
           <p className="text-muted-foreground mt-1">Search and manage all visitors recorded in the system.</p>
         </div>

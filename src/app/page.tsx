@@ -92,21 +92,21 @@ export default async function Home({ searchParams }: { searchParams: { view?: st
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         <StatCard 
           icon={<Users size={20} className="text-blue-500" />}
-          label={showAdminDashboard ? "Total First Timers" : "Total Assigned"}
+          label={showAdminDashboard ? "Total First Timers" : "Total First Timers"}
           value={allFirstTimers.length}
           trend="All time"
           color="bg-blue-500/5 border-blue-500/10"
         />
         <StatCard 
           icon={<Users size={20} className="text-primary" />}
-          label={showAdminDashboard ? "Active Guests" : "Currently Active"}
+          label={showAdminDashboard ? "Pending First Timers Integrations" : "My pending Integrations"}
           value={totalActive}
           trend={showAdminDashboard ? `${memberCount} active members` : "Active follow-ups"}
           color="bg-primary/5 border-primary/10"
         />
         <StatCard 
           icon={<Phone size={20} className="text-amber-500" />}
-          label="Calls Required"
+          label="Pending Calls"
           value={callsDueCount}
           trend="Need follow-up this week"
           color="bg-amber-500/5 border-amber-500/10"

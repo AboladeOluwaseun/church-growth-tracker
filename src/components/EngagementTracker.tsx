@@ -201,8 +201,8 @@ export default function EngagementTracker({
       </div>
 
       <div className="border border-border rounded-xl overflow-hidden text-sm">
-        <div className="grid grid-cols-3 bg-secondary/50 text-[10px] font-bold uppercase tracking-wider text-muted-foreground p-3 gap-2">
-            <div className="col-span-1">Week Ending</div>
+        <div className="grid grid-cols-[1.5fr_1fr_1fr] bg-secondary/50 text-[10px] font-bold uppercase tracking-wider text-muted-foreground p-3 gap-2">
+            <div className="col-span-1">Week Range</div>
             <div className="col-span-1 text-center flex justify-center items-center gap-1"><Phone size={10} /> Call</div>
             <div className="col-span-1 text-center flex justify-center items-center gap-1"><Calendar size={10} /> Sunday</div>
         </div>
@@ -237,9 +237,22 @@ export default function EngagementTracker({
                 const isFutureDate = now < week;
 
                 return (
-                    <div key={i} className={`grid grid-cols-3 p-3 gap-2 items-center transition-colors ${isFutureWeek ? 'opacity-50' : 'hover:bg-secondary/20'}`}>
-                        <div className="text-xs font-semibold text-muted-foreground">
-                            {week.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                    <div key={i} className={`grid grid-cols-[1.5fr_1fr_1fr] p-3 gap-2 items-center transition-colors ${isFutureWeek ? 'opacity-50' : 'hover:bg-secondary/20'}`}>
+                        <div className="text-[10px] font-bold text-muted-foreground leading-tight">
+                            {(() => {
+                                const monday = new Date(week);
+                                monday.setDate(week.getDate() - 6);
+                                const monStr = monday.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                                const sunStr = week.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                                return (
+                                    <div className="flex flex-col sm:flex-row sm:gap-1">
+                                        <span>{monStr}</span>
+                                        <span className="hidden sm:inline">-</span>
+                                        <span className="sm:hidden text-[8px] opacity-50">to</span>
+                                        <span>{sunStr}</span>
+                                    </div>
+                                );
+                            })()}
                         </div>
                         
                         <div className="flex justify-center">
