@@ -177,7 +177,7 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
                   {person.serviceComment && (
                     <div>
                       <p className="text-[10px] font-bold text-muted-foreground uppercase">Service Comment</p>
-                      <p className="text-xs text-muted-foreground italic leading-relaxed">"{person.serviceComment}"</p>
+                      <p className="text-xs text-muted-foreground italic leading-relaxed">&quot;{person.serviceComment}&quot;</p>
                     </div>
                   )}
                 </div>

@@ -147,7 +147,7 @@ export default async function NewFirstTimerPage() {
                 <textarea name="prayerRequest" rows={3} placeholder="Describe specific prayer needs..." className="input-field resize-none"></textarea>
               </div>
               <div className="space-y-3">
-                <label className="text-sm font-semibold text-foreground/80">Comment about today's service</label>
+                <label className="text-sm font-semibold text-foreground/80">Comment about today&apos;s service</label>
                 <textarea name="serviceComment" rows={3} placeholder="Tell us about your experience..." className="input-field resize-none"></textarea>
               </div>
             </div>
