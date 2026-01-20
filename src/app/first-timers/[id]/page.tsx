@@ -143,22 +143,7 @@ export default async function FirstTimerDetailPage({ params }: { params: { id: s
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest border-b border-border pb-2">Spiritual & Service</h3>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Born Again</p>
-                      <p className={`text-sm font-bold ${person.isBornAgain === 'Yes' ? 'text-emerald-500' : 'text-amber-500'}`}>
-                        {person.isBornAgain || 'N/A'}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Ghost Baptized</p>
-                      <p className={`text-sm font-bold ${person.isHolyGhostBaptized === 'Yes' ? 'text-emerald-500' : 'text-amber-500'}`}>
-                        {person.isHolyGhostBaptized || 'N/A'}
-                      </p>
-                    </div>
-                  </div>
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest border-b border-border pb-2">Additional Details</h3>
 
                   {person.preferredVisitTime && (
                     <div>
