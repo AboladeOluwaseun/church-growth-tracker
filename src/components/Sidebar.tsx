@@ -47,7 +47,7 @@ export default function Sidebar({
 
   return (
     <aside className={`
-      fixed left-0 top-0 h-screen w-72 lg:w-64 bg-[#1e1b4b] text-slate-300 flex flex-col z-[60] transition-transform duration-300 ease-in-out
+      fixed left-0 top-0 h-screen w-72 lg:w-64 bg-[#151931] text-slate-300 flex flex-col z-[60] transition-transform duration-300 ease-in-out
       lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}
     `}>
       {/* Logo Section */}
@@ -82,7 +82,7 @@ export default function Sidebar({
               className={`
                 flex items-center justify-between group px-4 py-3 rounded-xl transition-all duration-200
                 ${isActive 
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" 
+                  ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20" 
                   : "hover:bg-slate-800/50 hover:text-white"}
               `}
             >
