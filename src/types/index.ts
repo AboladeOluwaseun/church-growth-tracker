@@ -34,7 +34,7 @@ export interface FirstTimer {
   followUps?: FollowUp[];
 }
 
-export type FollowUpType = 'CALL' | 'NOTE' | 'VISIT' | 'TEXT';
+export type FollowUpType = 'CALL' | 'PRAYER' | 'NOTE' | 'VISIT' | 'TEXT';
 
 export interface FollowUp {
   id: string;

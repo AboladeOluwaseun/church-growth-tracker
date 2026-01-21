@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle2, Circle, Calendar, Phone, Loader2 } from 'lucide-react';
+import { CheckCircle2, Circle, Calendar, Phone, Loader2, Heart } from 'lucide-react';
 import { Attendance, FollowUp } from '@/types';
 
 export default function EngagementTracker({ 
@@ -51,7 +51,7 @@ export default function EngagementTracker({
     return attendances.some(a => new Date(a.date).toISOString().split('T')[0] === dateStr);
   };
 
-  const getWeekFollowUp = (date: Date, type: 'CALL' | 'VISIT' | 'TEXT') => {
+  const getWeekFollowUp = (date: Date, type: 'CALL' | 'VISIT' | 'TEXT' | 'PRAYER') => {
       // Find a follow-up of 'type' that occurred in the 6 days prior to this Sunday?
       // Or just roughly that week.
       // Let's check range: [Sunday - 6 days, Sunday End of Day]
@@ -103,7 +103,7 @@ export default function EngagementTracker({
     }
   };
 
-  const toggleFollowUp = async (date: Date, type: 'CALL' | 'VISIT') => {
+  const toggleFollowUp = async (date: Date, type: 'CALL' | 'VISIT' | 'PRAYER') => {
       // Logic: If already marked, ideally we delete it? 
       // User request: "they should be able to mark and track". Usually unmarking means deleting the log.
       const existing = getWeekFollowUp(date, type);
@@ -132,7 +132,7 @@ export default function EngagementTracker({
                 body: JSON.stringify({ 
                     firstTimerId, 
                     type,
-                    notes: `Weekly ${type === 'CALL' ? 'Check-in' : 'Visit'} for week ending ${date.toLocaleDateString()}`,
+                    notes: `Weekly ${type === 'CALL' ? 'Check-in' : type === 'PRAYER' ? 'Prayer' : 'Visit'} for week ending ${date.toLocaleDateString()}`,
                     // Optionally force date? The API uses 'now'. 
                     // If marking past weeks, this might be inaccurate timestamp.
                     // Ideally API allows sending 'date'. Current API uses default(now()).
@@ -201,15 +201,17 @@ export default function EngagementTracker({
       </div>
 
       <div className="border border-border rounded-xl overflow-hidden text-sm">
-        <div className="grid grid-cols-[1.5fr_1fr_1fr] bg-secondary/50 text-[10px] font-bold uppercase tracking-wider text-muted-foreground p-3 gap-2">
+        <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr] bg-secondary/50 text-[10px] font-bold uppercase tracking-wider text-muted-foreground p-3 gap-2">
             <div className="col-span-1">Week Range</div>
             <div className="col-span-1 text-center flex justify-center items-center gap-1"><Phone size={10} /> Call</div>
+            <div className="col-span-1 text-center flex justify-center items-center gap-1"><Heart size={10} /> Prayed</div>
             <div className="col-span-1 text-center flex justify-center items-center gap-1"><Calendar size={10} /> Sunday</div>
         </div>
         <div className="divide-y divide-border/50">
             {weeks.map((week, i) => {
                 const attended = isAttended(week);
                 const called = getWeekFollowUp(week, 'CALL');
+                const prayed = getWeekFollowUp(week, 'PRAYER');
                 
                 // Check if the week ending date is in the future
                 // Or if week start > now?
@@ -237,7 +239,7 @@ export default function EngagementTracker({
                 const isFutureDate = now < week;
 
                 return (
-                    <div key={i} className={`grid grid-cols-[1.5fr_1fr_1fr] p-3 gap-2 items-center transition-colors ${isFutureWeek ? 'opacity-50' : 'hover:bg-secondary/20'}`}>
+                    <div key={i} className={`grid grid-cols-[1.5fr_1fr_1fr_1fr] p-3 gap-2 items-center transition-colors ${isFutureWeek ? 'opacity-50' : 'hover:bg-secondary/20'}`}>
                         <div className="text-[10px] font-bold text-muted-foreground leading-tight">
                             {(() => {
                                 const monday = new Date(week);
@@ -266,6 +268,20 @@ export default function EngagementTracker({
                              >
                                 {loadingAction === `${week.toISOString()}-CALL` ? <Loader2 size={14} className="animate-spin" /> : 
                                  called ? <CheckCircle2 size={16} /> : <Circle size={16} />}
+                             </button>
+                        </div>
+
+                        <div className="flex justify-center">
+                             <button
+                                onClick={() => toggleFollowUp(week, 'PRAYER')}
+                                disabled={loadingAction !== null || isFutureWeek}
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                                    isFutureWeek ? 'cursor-not-allowed bg-secondary/50 text-muted-foreground/20' :
+                                    prayed ? 'bg-pink-500/10 text-pink-600' : 'bg-secondary text-muted-foreground/30 hover:bg-secondary/80'
+                                }`}
+                             >
+                                {loadingAction === `${week.toISOString()}-PRAYER` ? <Loader2 size={14} className="animate-spin" /> : 
+                                 prayed ? <CheckCircle2 size={16} /> : <Circle size={16} />}
                              </button>
                         </div>
 
